@@ -35,8 +35,8 @@ def test_explanation_uses_calculated_result():
     result = calculate_lift(1.225, 50.0, 16.2, 0.8)
     analysis = analyze_lift(1.225, 50.0, 16.2, 0.8, result)
     assert analysis.equation == "L = 0.5 * rho * V^2 * S * CL"
-    assert "1531.25 Pa" in analysis.dynamic_pressure_step
-    assert "19845.00 N" in analysis.lift_step
+    assert "1,531.25 Pa" in analysis.dynamic_pressure_step
+    assert "19,845.00 N" in analysis.lift_step
 
 
 def test_explanation_handles_negative_lift_coefficient():
