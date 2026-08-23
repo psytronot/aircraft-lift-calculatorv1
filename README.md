@@ -6,27 +6,31 @@ A compact Python engineering tool for calculating aircraft wing lift from the st
 
 The calculator uses:
 
-\[
+$$
 L = \frac{1}{2}\rho V^2 S C_L
-\]
+$$
 
 where:
 
-- \(L\) = lift force (N)
-- \(\rho\) = air density (kg/m³)
-- \(V\) = true airspeed relative to the air (m/s)
-- \(S\) = reference wing area (m²)
-- \(C_L\) = lift coefficient (dimensionless)
+- $L$ = lift force (N)
+- $\rho$ = air density (kg/m³)
+- $V$ = true airspeed relative to the air (m/s)
+- $S$ = reference wing area (m²)
+- $C_L$ = lift coefficient (dimensionless)
 
 The dynamic pressure is:
 
-\[
+$$
 q = \frac{1}{2}\rho V^2
-\]
+$$
 
-and therefore \(L=qSC_L\).
+and therefore:
 
-NASA describes the same standard lift equation and notes that \(C_L\) represents effects such as geometry and inclination and is commonly obtained from analysis or experiment. See the references below.
+$$
+L = qSC_L
+$$
+
+NASA describes the same standard lift equation and notes that $C_L$ represents effects such as geometry and inclination and is commonly obtained from analysis or experiment. See the references below.
 
 ## Features
 
@@ -44,7 +48,7 @@ For:
 - density = 1.225 kg/m³
 - velocity = 50 m/s
 - wing area = 16.2 m²
-- CL = 0.8
+- $C_L$ = 0.8
 
 The predicted lift is **19,845 N** (approximately **2,024 kgf**).
 
@@ -68,9 +72,26 @@ python examples/plot_lift.py
 
 The plot is written to `results/lift_vs_velocity.png`.
 
+## Project structure
+
+```text
+aircraft-lift-calculatorv1/
+├── examples/
+│   └── plot_lift.py
+├── src/
+│   └── lift_calculator.py
+├── tests/
+│   └── test_lift_calculator.py
+├── results/
+├── main.py
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
+
 ## Assumptions and limitations
 
-This is a first-order aerodynamic model. It does not calculate \(C_L\) from airfoil geometry, angle of attack, Reynolds number, Mach number, or a CFD/LLT solution. Compressibility, stall behavior, ground effect, induced effects, and unsteady aerodynamics are outside the current scope.
+This is a first-order aerodynamic model. It does not calculate $C_L$ from airfoil geometry, angle of attack, Reynolds number, Mach number, or a CFD/LLT solution. Compressibility, stall behavior, ground effect, induced effects, and unsteady aerodynamics are outside the current scope.
 
 ## Open-source reference
 
