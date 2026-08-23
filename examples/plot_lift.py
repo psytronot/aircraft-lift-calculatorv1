@@ -1,5 +1,9 @@
 """Generate a lift-vs-velocity plot for a representative wing."""
 from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,7 +16,7 @@ cl = 0.8
 velocities = np.linspace(10, 90, 200)
 lifts = [calculate_lift(rho, float(v), wing_area, cl).lift_n for v in velocities]
 
-output_dir = Path("results")
+output_dir = ROOT / "results"
 output_dir.mkdir(exist_ok=True)
 output_file = output_dir / "lift_vs_velocity.png"
 
