@@ -18,5 +18,9 @@ jobs:
         with:
           node-version: 22
       - run: npm install
-      - run: npm test
-      - run: npm run build
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+      - name: Unit and integration QA
+        run: npm test
+      - name: Production build
+        run: npm run build
