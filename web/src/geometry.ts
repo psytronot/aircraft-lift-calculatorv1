@@ -44,9 +44,9 @@ export const GEOMETRY_LIBRARY: GeometryDefinition[] = [
   { id: 'sphere', name: 'Sphere', family: 'solid3d', parameters: ['radius'], description: 'Sphere with circular projected area.' },
   { id: 'cylinder', name: 'Cylinder', family: 'solid3d', parameters: ['radius', 'length'], description: 'Circular cylinder.' },
   { id: 'cone', name: 'Cone', family: 'solid3d', parameters: ['radius', 'length'], description: 'Right circular cone.' },
-  { id: 'triangularPrism', name: 'Triangular prism', family: 'solid3d', parameters: ['base', 'height', 'length'], description: 'Triangular cross-section extruded along length.' },
+  { id: 'triangularPrism', name: 'Triangular prism', family: 'solid3d', parameters: ['base', 'height', 'length'], description: 'Isosceles triangular cross-section extruded along length.' },
   { id: 'rectangularPrism', name: 'Rectangular prism', family: 'solid3d', parameters: ['length', 'width', 'height'], description: 'Rectangular prism.' },
-  { id: 'squarePyramid', name: 'Square pyramid', family: 'solid3d', parameters: ['base', 'height'], description: 'Square base with apex.' },
+  { id: 'squarePyramid', name: 'Square pyramid', family: 'solid3d', parameters: ['base', 'height'], description: 'Square base with centered apex.' },
   { id: 'coneFrustum', name: 'Cone frustum', family: 'solid3d', parameters: ['radius1', 'radius2', 'length'], description: 'Truncated right circular cone.' },
   { id: 'ellipsoid', name: 'Ellipsoid', family: 'solid3d', parameters: ['radiusX', 'radiusY', 'radiusZ'], description: 'Ellipsoidal solid.' },
 ];
@@ -91,24 +91,24 @@ export function computeGeometry(state: GeometryState): GeometryResult {
     }
     case 'cylinder': {
       const r = p('radius'); const l = p('length'); const face = PI * r ** 2;
-      return { mathematicalAreaM2: face, surfaceAreaM2: 2 * PI * r * (r + l), volumeM3: PI * r ** 2 * l, referenceAreaM2: state.flowMode === 'axis' ? face : 2 * r * l, characteristicLengthM: l, aspectRatio: l / (2 * r), formula: 'Surface = 2πr(r+L); volume = πr²L; reference = face or projected side' };
+      return { mathematicalAreaM2: face, surfaceAreaM2: 2 * PI * r * (r + l), volumeM3: PI * r ** 2 * l, referenceAreaM2: state.flowMode === 'axis' ? face : 2 * r * l, characteristicLengthM: l, aspectRatio: l / (2 * r), formula: 'Surface = 2πr(r+L); volume = πr²L; reference = πr² axial or 2rL cross-flow' };
     }
     case 'cone': {
       const r = p('radius'); const l = p('length'); const slant = Math.sqrt(r ** 2 + l ** 2); const face = PI * r ** 2;
-      return { mathematicalAreaM2: face, surfaceAreaM2: PI * r * (r + slant), volumeM3: PI * r ** 2 * l / 3, referenceAreaM2: state.flowMode === 'axis' ? face : 2 * r * l, characteristicLengthM: l, aspectRatio: l / (2 * r), formula: 'Surface = πr(r+s); volume = 1/3πr²L' };
+      return { mathematicalAreaM2: face, surfaceAreaM2: PI * r * (r + slant), volumeM3: PI * r ** 2 * l / 3, referenceAreaM2: state.flowMode === 'axis' ? face : r * l, characteristicLengthM: l, aspectRatio: l / (2 * r), formula: 'Surface = πr(r+s); volume = 1/3πr²L; cross-flow projection = rL' };
     }
     case 'triangularPrism': {
       const b = p('base'); const h = p('height'); const l = p('length'); const tri = 0.5 * b * h;
       const side = Math.sqrt((b / 2) ** 2 + h ** 2);
-      return { mathematicalAreaM2: tri, surfaceAreaM2: b * l + 2 * tri + 2 * side * l, volumeM3: tri * l, referenceAreaM2: state.flowMode === 'axis' ? b * h : l * h, characteristicLengthM: l, aspectRatio: l / Math.max(b, h), formula: 'Triangle = ½bh; volume = triangle × L' };
+      return { mathematicalAreaM2: tri, surfaceAreaM2: b * l + 2 * tri + 2 * side * l, volumeM3: tri * l, referenceAreaM2: state.flowMode === 'axis' ? b * h : l * h, characteristicLengthM: l, aspectRatio: l / Math.max(b, h), formula: 'Triangle = ½bh; isosceles side = √((b/2)²+h²); volume = triangle × L' };
     }
     case 'squarePyramid': {
       const b = p('base'); const h = p('height'); const slant = Math.sqrt((b / 2) ** 2 + h ** 2);
-      return { mathematicalAreaM2: b ** 2, surfaceAreaM2: b ** 2 + 2 * b * slant, volumeM3: b ** 2 * h / 3, referenceAreaM2: b ** 2, characteristicLengthM: b, aspectRatio: 1, formula: 'Surface = b² + 2bs; volume = 1/3b²h' };
+      return { mathematicalAreaM2: b ** 2, surfaceAreaM2: b ** 2 + 2 * b * slant, volumeM3: b ** 2 * h / 3, referenceAreaM2: state.flowMode === 'axis' ? b ** 2 : b * h, characteristicLengthM: b, aspectRatio: 1, formula: 'Surface = b² + 2bs; volume = 1/3b²h; face projection = bh' };
     }
     case 'coneFrustum': {
       const r1 = p('radius1'); const r2 = p('radius2'); const l = p('length'); const slant = Math.sqrt((r1 - r2) ** 2 + l ** 2);
-      return { mathematicalAreaM2: PI * r1 ** 2, surfaceAreaM2: PI * (r1 + r2) * slant + PI * (r1 ** 2 + r2 ** 2), volumeM3: PI * l * (r1 ** 2 + r1 * r2 + r2 ** 2) / 3, referenceAreaM2: PI * r1 ** 2, characteristicLengthM: l, aspectRatio: l / Math.max(2 * r1, 1e-9), formula: 'V = πL(r₁²+r₁r₂+r₂²)/3' };
+      return { mathematicalAreaM2: PI * r1 ** 2, surfaceAreaM2: PI * (r1 + r2) * slant + PI * (r1 ** 2 + r2 ** 2), volumeM3: PI * l * (r1 ** 2 + r1 * r2 + r2 ** 2) / 3, referenceAreaM2: state.flowMode === 'axis' ? PI * Math.max(r1, r2) ** 2 : (r1 + r2) * l, characteristicLengthM: l, aspectRatio: l / Math.max(2 * Math.max(r1, r2), 1e-9), formula: 'V = πL(r₁²+r₁r₂+r₂²)/3; cross-flow projection = (r₁+r₂)L' };
     }
     case 'ellipsoid': {
       const a = p('radiusX'); const b = p('radiusY'); const c = p('radiusZ'); const ref = PI * b * c;
