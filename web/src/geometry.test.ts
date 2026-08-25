@@ -86,11 +86,16 @@ describe('3D geometry formulas', () => {
     close(r.referenceAreaM2, 20);
   });
 
-  it('computes a cone', () => {
-    const r = computeGeometry(state('cone', { radius: 3, length: 4 }));
+  it('computes a cone in axial flow', () => {
+    const r = computeGeometry(state('cone', { radius: 3, length: 4 }, 'axis'));
     close(r.volumeM3, 12 * Math.PI);
     close(r.referenceAreaM2, 9 * Math.PI);
     close(r.surfaceAreaM2, 24 * Math.PI);
+  });
+
+  it('computes the exact broadside projection of a right cone', () => {
+    const r = computeGeometry(state('cone', { radius: 3, length: 4 }, 'face'));
+    close(r.referenceAreaM2, 12);
   });
 
   it('computes a rectangular prism in both principal flow orientations', () => {
@@ -109,16 +114,23 @@ describe('3D geometry formulas', () => {
     close(r.referenceAreaM2, 12);
   });
 
-  it('computes a square pyramid', () => {
-    const r = computeGeometry(state('squarePyramid', { base: 4, height: 3 }));
-    close(r.volumeM3, 16);
-    close(r.referenceAreaM2, 16);
+  it('computes a square pyramid in both principal flow orientations', () => {
+    const axis = computeGeometry(state('squarePyramid', { base: 4, height: 3 }, 'axis'));
+    const face = computeGeometry(state('squarePyramid', { base: 4, height: 3 }, 'face'));
+    close(axis.volumeM3, 16);
+    close(axis.referenceAreaM2, 16);
+    close(face.referenceAreaM2, 12);
   });
 
-  it('computes a cone frustum', () => {
-    const r = computeGeometry(state('coneFrustum', { radius1: 3, radius2: 2, length: 4 }));
+  it('computes a cone frustum in axial flow', () => {
+    const r = computeGeometry(state('coneFrustum', { radius1: 3, radius2: 2, length: 4 }, 'axis'));
     close(r.volumeM3, Math.PI * 4 * (9 + 6 + 4) / 3);
     close(r.referenceAreaM2, 9 * Math.PI);
+  });
+
+  it('computes the principal broadside projection of a cone frustum', () => {
+    const r = computeGeometry(state('coneFrustum', { radius1: 3, radius2: 2, length: 4 }, 'face'));
+    close(r.referenceAreaM2, 20);
   });
 
   it('computes an ellipsoid volume and projected reference area', () => {
