@@ -13,7 +13,9 @@ describe('deep geometry QA matrix', () => {
   });
 
   it.each([
-    ['circle', makeState('circle', { radius: 2 }), Math.PI * 4, 4 / 3 * Math.PI * 8],
+    // 2D geometry has no volume; the circle volume expectation was previously
+    // inconsistent with the geometry definition and the other 2D shapes.
+    ['circle', makeState('circle', { radius: 2 }), Math.PI * 4, 0],
     ['rectangle', makeState('rectangle', { length: 3, width: 2 }), 6, 0],
     ['triangle', makeState('triangle', { base: 4, height: 3 }), 6, 0],
     ['ellipse', makeState('ellipse', { semiMajor: 2, semiMinor: 1 }), 2 * Math.PI, 0],
@@ -22,7 +24,9 @@ describe('deep geometry QA matrix', () => {
     ['sphere', makeState('sphere', { radius: 2 }), 4 * Math.PI, 32 / 3 * Math.PI],
     ['cylinder', makeState('cylinder', { radius: 2, length: 5 }), 4 * Math.PI, 20 * Math.PI],
     ['cone', makeState('cone', { radius: 2, length: 5 }), 4 * Math.PI, 20 * Math.PI / 3],
-    ['triangularPrism', makeState('triangularPrism', { base: 4, height: 3, length: 5 }), 12, 30],
+    // mathematicalAreaM2 is the triangular cross-section area (1/2 bh).
+    // The projected face area used for face-flow is covered separately below.
+    ['triangularPrism', makeState('triangularPrism', { base: 4, height: 3, length: 5 }), 6, 30],
     ['rectangularPrism', makeState('rectangularPrism', { length: 3, width: 2, height: 4 }), 8, 24],
     ['squarePyramid', makeState('squarePyramid', { base: 4, height: 3 }), 16, 16],
     ['coneFrustum', makeState('coneFrustum', { radius1: 2, radius2: 1, length: 3 }), 4 * Math.PI, Math.PI * 3 * (4 + 2 + 1) / 3],
